@@ -1,0 +1,186 @@
+'use strict';
+
+import Sociare from '../src/index.js';
+import utils from '../src/utils.js';
+
+describe('Sociare', () => {
+  let root = document.createElement('div');
+
+  before(() => {
+    window.SociareConfig = {
+      count_url: 'http://counter.com',
+      url: 'http://test.com',
+      buttons: ['twitter', 'facebook']
+    };
+  });
+
+  beforeEach(() => { root.innerHTML = ''; });
+  after(() => { delete window.SociareConfig; });
+
+  describe('constructor', () => {
+    it('should set up all the networks', () => {
+      let sociare = new Sociare(root);
+      expect(sociare.twitter).to.not.be.undefined;
+      expect(sociare.facebook).to.not.be.undefined;
+      expect(sociare.googleplus).to.not.be.undefined;
+      expect(sociare.pinterest).to.not.be.undefined;
+      expect(sociare.linkedin).to.not.be.undefined;
+    });
+  });
+
+  describe('_networks', () => {
+    let sociare;
+
+    beforeEach(() => {
+      sociare = new Sociare(root, {
+        buttons: [
+          'twitter',
+          {
+            type: 'facebook',
+            template: 'Share on Facebook'
+          }
+        ]
+      });
+    });
+
+    it('should return a map of the various button types', () => {
+      expect(sociare._networks).to.deep.equal(['twitter', 'facebook']);
+    });
+  });
+
+  describe('_countUrl', () => {
+    describe('if count_url is supplied in config', () => {
+      it('should return config.count_url', () => {
+        let sociare = new Sociare(root);
+        expect(sociare._countUrl).to.equal('http://counter.com');
+      });
+    });
+
+    describe('if count_url is not supplied in config', () => {
+      it('should return the Sociare API url', () => {
+        let sociare = new Sociare(root, { count_url: undefined });
+        expect(sociare._countUrl).to.equal('https://api.socia.re');
+      });
+    });
+  });
+
+  describe('_url', () => {
+    describe('if url is supplied in config', () => {
+      it('should return config.url', () => {
+        let sociare = new Sociare(root);
+        expect(sociare._url).to.equal('http://test.com');
+      });
+    });
+
+    describe('if url is not supplied in config', () => {
+      it('should return the current location', () => {
+        let sociare = new Sociare(root, { url: undefined });
+        expect(sociare._url).to.equal(window.location.href);
+      });
+    });
+  });
+
+  describe('_getCounts', () => {
+    let test_url = 'http://counter.com?url=http://test.com&networks=twitter,facebook',
+        request, sociare;
+
+    beforeEach(() => {
+      sociare = new Sociare(root);
+      request = sinon.stub(utils, 'request', () => { return 'test-request' });
+    });
+
+    afterEach(() => { request.restore(); });
+
+    it('should resolve with 0 counts if counts are not necessary', () => {
+      let sociare2 = new Sociare(root, { getCounts: false });
+
+      return sociare2._getCounts().then(function (counts) {
+        expect(counts).to.deep.equal({
+          facebook: 0,
+          twitter: 0
+        })
+      });
+    });
+
+    it('should return a request', () => {
+      expect(sociare._getCounts()).to.equal('test-request');
+    });
+
+    it('should request a fully-built URL', () => {
+      sociare._getCounts();
+      expect(request).to.have.been.calledOnce;
+      expect(request).to.have.been.calledWithExactly(test_url);
+    });
+
+    it('should handle query string options', () => {
+      let noQuery = new Sociare(root, { noQueryCount: true });
+      noQuery._getCounts();
+      expect(request).to.have.been.calledWithExactly(`${test_url}&stripQuery=true`);
+    });
+  });
+
+  describe('_renderButtons', () => {
+    let fake_counts = { twitter: 5, facebook: 10 },
+        sociare, twitter, facebook;
+
+    function _generateButton(type) {
+      var button = document.createElement('p');
+      button.innerHTML = `${type} button`;
+      return button;
+    }
+
+    beforeEach(() => {
+      sociare = new Sociare(root);
+      twitter = sinon.stub(sociare.twitter, 'generateButton', () => _generateButton('twitter'));
+      facebook = sinon.stub(sociare.facebook, 'generateButton', () => _generateButton('facebook'));
+    });
+
+    afterEach(() => {
+      twitter.restore();
+      facebook.restore();
+    });
+
+    it('should generate a button for each network supplied', function () {
+      sociare._renderButtons(fake_counts);
+      expect(twitter).to.have.been.calledOnce;
+      expect(facebook).to.have.been.calledOnce;
+      expect(root.innerHTML).to.equal('<p>twitter button</p><p>facebook button</p>');
+    });
+  });
+
+  describe('render', () => {
+    let sociare, render, counts, error;
+
+    beforeEach(() => {
+      sociare = new Sociare(root);
+      render = sinon.stub(Sociare.prototype, '_renderButtons');
+      counts = sinon.stub(Sociare.prototype, '_getCounts', () => Promise.resolve({ twitter: 5 }));
+      error = sinon.stub(console, 'error');
+    });
+
+    afterEach(() => {
+      render.restore();
+      counts.restore();
+      error.restore();
+    });
+
+    it('should get the counts and render the buttons', () => {
+      return sociare.render().finally(function () {
+        expect(counts).to.have.been.calledOnce;
+        expect(render).to.have.been.calledOnce;
+        expect(render).to.have.been.calledAfter(counts);
+        expect(render).to.have.been.calledWithExactly({ twitter: 5 });
+      });
+    });
+
+    it('should log out errors', function () {
+      render.throws({ message: 'test error' });
+
+      return sociare.render().finally(() => {
+        expect(error).to.have.been.calledOnce;
+        expect(error.args[0][0]).to.equal('[Sociare Error]');
+        expect(error.args[0][1].message).to.equal('test error');
+      });
+    });
+  });
+});

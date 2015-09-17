@@ -1,0 +1,31 @@
+{
+  "name": "sociare",
+  "version": "0.1.0",
+  "description": "Super simple share buttons with counts.",
+  "main": "dist/sociare.js",
+  "keywords": [
+    "share",
+    "social",
+    "buttons",
+    "counts",
+    "share buttons",
+    "share counts",
+    "client",
+    "browser"
+  ],
+  "license": "MIT",
+  "author": {
+    "name": "Josh Lasdin",
+    "email": "joshlasdin@globobeet.org"
+  },
+  "ignore": [
+    "coverage",
+    "src",
+    "test",
+    ".npmignore",
+    ".travis.yml",
+    "test",
+    "karma.config.js",
+    "webpack.config.js"
+  ]
+}

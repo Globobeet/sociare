@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en-US" class="no-js">
+<head>
+    <meta charset="UTF-8" />
+    <title>Sociare Test</title>
+
+    <style>
+      .sociare {
+        display: inline-block;
+        margin: 0 15px;
+        padding: .75em 1.5em;
+        font-size: 18px;
+        font-family: sans-serif;
+        background: gray;
+        color: white;
+      }
+    </style>
+    <script src="dist/sociare.min.js"></script>
+</head>
+<body>
+  <div id="button-container"></div>
+
+  <script>
+    var sociare = new Sociare(document.getElementById('button-container'), {
+      getCounts: false,
+      url: 'https://pledgeit.org/red-land-vs-cancer',
+      buttonAttrs: { href: '' },
+      buttons: ['facebook', 'twitter', 'pinterest', 'linkedin', 'googleplus']
+    }).render();
+  </script>
+</body>
+</html>
