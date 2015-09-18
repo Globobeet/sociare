@@ -32,11 +32,27 @@ export default class AbstractService {
   }
 
   get parsed_options() {
-    let interpolated = JSON.stringify(utils.extend({}, this.options))
-      .replace(/\{count\}/g, this.count)
-      .replace(/\{network\}/g, this.name);
+    let count = this.count,
+        name = this.name;
 
-    return JSON.parse(interpolated);
+    function replace_tokens(input) {
+      return input.replace(/\{count\}/g, count).replace(/\{network\}/g, name);
+    }
+
+    function replace_all_tokens(node) {
+      switch(Object.prototype.toString.call(node)) {
+        case '[object Array]': return node.map(item => replace_all_tokens(item));
+        case '[object Object]':
+          return Object.keys(node).reduce((res, key) => {
+            res[replace_tokens(key)] = replace_all_tokens(node[key]);
+            return res;
+          }, {});
+        case '[object String]': return replace_tokens(node);
+        default: return node;
+      }
+    }
+
+    return replace_all_tokens(utils.extend({}, this.options));
   }
 
   generateButton(count) {
