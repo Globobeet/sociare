@@ -72,19 +72,26 @@ describe('Sociare', () => {
             'network-{network}': 'test-{network}',
             'count-{count}': 'test-{count}',
           },
-          buttons: ['test']
+          buttons: [{
+            type: 'test',
+            foo: [
+              { 'prop-{network}': 'val-{count}' }
+            ]
+          }]
         });
 
         service.count = 4;
       });
 
       it('should replace all instances of "{network}" and "{count}"', () => {
-        expect(service.parsed_options.class).to.equal('count-4 network-test');
-        expect(service.parsed_options.id).to.equal('test-4');
-        expect(service.parsed_options.attrs).to.deep.equal({
+        let options = service.parsed_options;
+        expect(options.class).to.equal('count-4 network-test');
+        expect(options.id).to.equal('test-4');
+        expect(options.attrs).to.deep.equal({
           'network-test': 'test-test',
           'count-4': 'test-4'
         });
+        expect(options.foo).to.deep.equal([{ 'prop-test': 'val-4' }]);
       });
     })
 
