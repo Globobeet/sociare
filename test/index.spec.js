@@ -86,7 +86,8 @@ describe('Sociare', () => {
 
     beforeEach(() => {
       sociare = new Sociare(root);
-      request = sinon.stub(utils, 'request', () => { return 'test-request' });
+      request = sinon.stub(utils, 'request');
+      request.returns(Promise.resolve('test-request'));
     });
 
     afterEach(() => { request.restore(); });
@@ -98,24 +99,60 @@ describe('Sociare', () => {
         expect(counts).to.deep.equal({
           facebook: 0,
           twitter: 0
-        })
+        });
       });
     });
 
     it('should return a request', () => {
-      expect(sociare._getCounts()).to.equal('test-request');
+      return sociare._getCounts()
+        .then(result => {
+          expect(result).to.equal('test-request');
+        });
     });
 
     it('should request a fully-built URL', () => {
-      sociare._getCounts();
-      expect(request).to.have.been.calledOnce;
-      expect(request).to.have.been.calledWithExactly(test_url);
+      return sociare._getCounts()
+        .then(result => {
+          expect(request).to.have.been.calledOnce;
+          expect(request).to.have.been.calledWithExactly(test_url);
+        });
     });
 
     it('should handle query string options', () => {
       let noQuery = new Sociare(root, { noQueryCount: true });
-      noQuery._getCounts();
-      expect(request).to.have.been.calledWithExactly(`${test_url}&stripQuery=true`);
+      return noQuery._getCounts()
+        .then(result => {
+          expect(request).to.have.been.calledWithExactly(`${test_url}&stripQuery=true`);
+        });
+    });
+
+    describe('on failure', () => {
+      let error;
+
+      beforeEach(() => {
+        request.returns(Promise.reject('test error'));
+        error = sinon.stub(console, 'error');
+      });
+
+      afterEach(() => { error.restore(); });
+
+      it('should log the error', () => {
+        return sociare._getCounts()
+          .then(result => {
+            expect(error).to.have.been.calledOnce;
+            expect(error).to.have.been.calledWith('[Sociare Error]', 'test error')
+          });
+      });
+
+      it('should supply 0 counts', () => {
+        return sociare._getCounts()
+          .then(result => {
+            expect(result).to.deep.equal({
+              facebook: 0,
+              twitter: 0
+            });
+          });
+      });
     });
   });
 

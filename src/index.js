@@ -18,6 +18,7 @@ const $googleplus = Symbol('googleplus');
 
 let defaultConfig = {
   getCounts: true,
+  noQueryCount: false,
   buttons: [],
   buttonTag: 'a',
   buttonId: '',
@@ -59,12 +60,14 @@ export default class Sociare {
   }
 
   _getCounts() {
+    let blank = this._networks.reduce((obj, network) => {
+      obj[network] = 0;
+      return obj;
+    }, {});
+
     // Auto-set counts to 0 if we're not using them
     if (!this.config.getCounts) {
-      return Promise.resolve(this._networks.reduce((obj, network) => {
-        obj[network] = 0;
-        return obj;
-      }, {}));
+      return Promise.resolve(blank);
     }
 
     let url = `${this._countUrl}?url=${this._url}&networks=${this._networks.join(',')}`;
@@ -72,7 +75,11 @@ export default class Sociare {
     // Indicate if the query string should be included
     if (this.config.noQueryCount) { url += '&stripQuery=true'; }
 
-    return utils.request(url);
+    return utils.request(url)
+      .catch(err => {
+        console.error('[Sociare Error]', err);
+        return blank;
+      });
   }
 
   _renderButtons(counts) {
