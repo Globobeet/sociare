@@ -57,9 +57,16 @@ describe('Sociare', () => {
     });
 
     describe('if count_url is not supplied in config', () => {
-      it('should return the Sociare API url', () => {
-        let sociare = new Sociare(root, { count_url: undefined });
-        expect(sociare._countUrl).to.equal('https://api.socia.re');
+      it('should throw an error', () => {
+        let sociare = new Sociare(root, { count_url: undefined }),
+            spy = sinon.spy();
+
+        try { sociare._countUrl; }
+        catch (err) { spy(err); }
+        finally {
+          expect(spy).have.been.calledOnce;
+          expect(spy.args[0][0]).to.be.an('error');
+        }
       });
     });
   });

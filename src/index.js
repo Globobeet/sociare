@@ -52,7 +52,13 @@ export default class Sociare {
 
   get container() { return this[$container]; }
   get config() { return this[$config]; }
-  get _countUrl() { return this.config.count_url || 'https://api.socia.re'; }
+  get _countUrl() {
+    if (!this.config.count_url) {
+      throw new Error('config.count_url is required unless config.getCounts is false.');
+    }
+
+    return this.config.count_url;
+  }
   get _url() { return this.config.url || window.location.href; }
 
   get _networks() {
