@@ -8,7 +8,7 @@ describe('Sociare', () => {
 
   before(() => {
     window.SociareConfig = {
-      count_url: 'http://counter.com',
+      countUrl: 'http://counter.com',
       url: 'http://test.com',
       buttons: ['twitter', 'facebook']
     };
@@ -49,16 +49,16 @@ describe('Sociare', () => {
   });
 
   describe('_countUrl', () => {
-    describe('if count_url is supplied in config', () => {
-      it('should return config.count_url', () => {
+    describe('if countUrl is supplied in config', () => {
+      it('should return config.countUrl', () => {
         let sociare = new Sociare(root);
         expect(sociare._countUrl).to.equal('http://counter.com');
       });
     });
 
-    describe('if count_url is not supplied in config', () => {
+    describe('if countUrl is not supplied in config', () => {
       it('should throw an error', () => {
-        let sociare = new Sociare(root, { count_url: undefined }),
+        let sociare = new Sociare(root, { countUrl: undefined }),
             spy = sinon.spy();
 
         try { sociare._countUrl; }

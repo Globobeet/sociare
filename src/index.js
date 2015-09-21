@@ -18,8 +18,8 @@ const $googleplus = Symbol('googleplus');
 
 let defaultConfig = {
   getCounts: true,
+  countUrl: '',
   noQueryCount: false,
-  buttons: [],
   buttonTag: 'a',
   buttonId: '',
   buttonClass: 'sociare sociare-{network}',
@@ -27,7 +27,8 @@ let defaultConfig = {
   buttonTemplate: 'Share on {network} - {count}',
   twitterExtras: {},
   pinterestExtras: {},
-  linkedinExtras: {}
+  linkedinExtras: {},
+  buttons: [],
 };
 
 export default class Sociare {
@@ -53,11 +54,11 @@ export default class Sociare {
   get container() { return this[$container]; }
   get config() { return this[$config]; }
   get _countUrl() {
-    if (!this.config.count_url) {
+    if (!this.config.countUrl) {
       throw new Error('config.count_url is required unless config.getCounts is false.');
     }
 
-    return this.config.count_url;
+    return this.config.countUrl;
   }
   get _url() { return this.config.url || window.location.href; }
 
