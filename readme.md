@@ -16,6 +16,8 @@ or with Bower
 $ bower install -S sociare
 ```
 
+or you can [download it directly.](https://raw.githubusercontent.com/Globobeet/sociare/master/dist/sociare.min.js)
+
 
 ## Usage Example
 
