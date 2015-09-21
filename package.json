@@ -1,7 +1,8 @@
 {
   "name": "sociare",
   "version": "0.1.0",
-  "description": "Super simple share buttons with counts.",
+  "description": "Super simple customizable share buttons with counts.",
+  "homepage": "https://github.com/Globobeet/sociare",
   "main": "lib/index.js",
   "keywords": [
     "share",
@@ -13,6 +14,13 @@
     "client",
     "browser"
   ],
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/Globobeet/sociare.git"
+  },
+  "bugs": {
+    "url" : "https://github.com/Globobeet/sociare/issues"
+  },
   "licenses": [{
     "type": "MIT",
     "url": "https://github.com/Globobeet/sociare/blob/master/license.txt"
