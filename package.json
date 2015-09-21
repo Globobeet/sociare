@@ -26,10 +26,10 @@
     "url": "https://github.com/Globobeet/sociare/blob/master/license.txt"
   }],
   "scripts": {
-    "test": "karma start ./karma.config.js",
-    "build": "webpack && npm run minify",
+    "test": "rm -rf ./coverage/ && karma start ./karma.config.js",
+    "build": "rm -rf ./dist/ && webpack && npm run minify",
     "minify": "uglifyjs dist/sociare.js -o dist/sociare.min.js",
-    "transpile": "babel src --out-dir lib",
+    "transpile": "rm -rf ./lib/ && babel src --out-dir lib",
     "prepublish": "npm run transpile && npm run build"
   },
   "author": {
