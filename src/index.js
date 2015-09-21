@@ -80,7 +80,7 @@ export default class Sociare {
     let url = `${this._countUrl}?url=${this._url}&networks=${this._networks.join(',')}`;
 
     // Indicate if the query string should be included
-    if (this.config.noQueryCount) { url += '&stripQuery=true'; }
+    if (this.config.noQueryCount) { url += '&omitQuery=true'; }
 
     return utils.request(url)
       .catch(err => {

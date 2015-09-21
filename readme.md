@@ -75,7 +75,7 @@ In any of the button configuration options (both default and button-specific), t
 | `getCounts` | Boolean | `true` | Indicates whether Sociare should request counts for `config.url` |
 | `countUrl` | String | | URL to request counts from. Required if `config.getCounts` is `true`. See [Handling Count Requests](#handling-count-requests) for information on what Sociare will expect to be returned |
 | `noQueryCount` | Boolean | `false` | If true, adds query string to `config.countUrl` to indicate that query strings on `config.url` should be ignored when retrieving counts |
-| `buttonTag` | String | `"a"` | Default button tagName | 
+| `buttonTag` | String | `"a"` | Default button tagName |
 | `buttonId` | String | `""` | Default button id. If specified here, should use `{network}` to keep ids unique |
 | `buttonClass` | String | `"sociare sociare-{network}"` | Default button classes |
 | `buttonAttrs` | Object | `{}` | Additional attributes on button elements. Keys map to attribute names, values to attribute values |
@@ -90,7 +90,7 @@ In any of the button configuration options (both default and button-specific), t
 Instead of just passing the network name as a string, you can fine-tune any button made with Sociare by instead passing a configuration object for it in the `buttons` array. Option names listed below:
 
 | Name | Type | Description |
-| ---- | ---- | ----------- | 
+| ---- | ---- | ----------- |
 | `url` | String | URL to share |
 | `type` | String | Network type. Available networks are `"facebook"`, `"twitter"`, `"pinterest"`, `"linkedin"`, and `"googleplus"` |
 | `tag` | String | Button element tagName |
@@ -103,12 +103,12 @@ Instead of just passing the network name as a string, you can fine-tune any butt
 
 ### Extras
 
-Some button types (twitter, pinterest, and linkedin) have additional optional configuration that will alter how the URL is shared. See sections below for each networks available extra configuration. All extra values 
+Some button types (twitter, pinterest, and linkedin) have additional optional configuration that will alter how the URL is shared. See sections below for each networks available extra configuration. All extra values
 
 #### Twitter Extras
 
 | Name | Description |
-| ---- | ----------- | 
+| ---- | ----------- |
 | `text` | Pre-filled tweet text. Users will still have the option to change this before sharing |
 | `via` | A Twitter username to associate tweet. Will append "via @{username}" to end of tweet. |
 | `hashtags` | Comma delimited list of hashtags to append to the tweet. Do not include the "#" character |
@@ -117,7 +117,7 @@ Some button types (twitter, pinterest, and linkedin) have additional optional co
 #### Pinterest Extras
 
 | Name | Description |
-| ---- | ----------- | 
+| ---- | ----------- |
 | `media` | URL of image to use when pinned to users boards |
 | `description` | Caption to be used on pin |
 
@@ -125,7 +125,7 @@ Some button types (twitter, pinterest, and linkedin) have additional optional co
 #### LinkedIn Extras
 
 | Name | Description |
-| ---- | ----------- | 
+| ---- | ----------- |
 | `title` | Title that will appear on share card |
 | `description` | Description to appear on share card |
 | `source` | Source of the content (such as your websites name) |
@@ -146,7 +146,7 @@ When Sociare makes this request, it applies the following query parameters to th
 
 * `url` - URL for which counts should be collected
 * `networks` - Which networks Sociare requires counts from
-* `stripQuery` - Whether query strings on the `url` should be included when fetching counts
+* `omitQuery` - Whether query strings on the `url` should be included when fetching counts
 
 Getting these counts is a real pain, so to make this easier, we've set up a [simple NodeJS utility](https://npmjs.org/package/sociare-counter) you can use to fetch these counts and output this data.
 
@@ -165,4 +165,3 @@ $ npm test
 ## License
 
 Sociare is distributed under the [MIT license](https://github.com/Globobeet/sociare/blob/master/license.txt).
-

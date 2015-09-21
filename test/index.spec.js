@@ -129,7 +129,7 @@ describe('Sociare', () => {
       let noQuery = new Sociare(root, { noQueryCount: true });
       return noQuery._getCounts()
         .then(result => {
-          expect(request).to.have.been.calledWithExactly(`${test_url}&stripQuery=true`);
+          expect(request).to.have.been.calledWithExactly(`${test_url}&omitQuery=true`);
         });
     });
 
