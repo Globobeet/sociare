@@ -1,6 +1,5 @@
 {
   "name": "sociare",
-  "version": "0.1.0",
   "description": "Super simple customizable share buttons with counts.",
   "main": "dist/sociare.js",
   "keywords": [
