@@ -119,11 +119,13 @@
 	    this[$container] = container;
 	    this[$config] = _utilsJs2['default'].extend({}, defaultConfig, window.SociareConfig, config);
 
-	    this[$facebook] = new _servicesFacebookJs2['default'](_utilsJs2['default'].extend({ url: this.url }, this.config));
-	    this[$twitter] = new _servicesTwitterJs2['default'](_utilsJs2['default'].extend({ url: this.url }, this.config));
-	    this[$pinterest] = new _servicesPinterestJs2['default'](_utilsJs2['default'].extend({ url: this.url }, this.config));
-	    this[$linkedin] = new _servicesLinkedinJs2['default'](_utilsJs2['default'].extend({ url: this.url }, this.config));
-	    this[$googleplus] = new _servicesGoogleplusJs2['default'](_utilsJs2['default'].extend({ url: this.url }, this.config));
+	    var serviceConfig = _utilsJs2['default'].extend({}, this.config, { url: this._url });
+
+	    this[$facebook] = new _servicesFacebookJs2['default'](serviceConfig);
+	    this[$twitter] = new _servicesTwitterJs2['default'](serviceConfig);
+	    this[$pinterest] = new _servicesPinterestJs2['default'](serviceConfig);
+	    this[$linkedin] = new _servicesLinkedinJs2['default'](serviceConfig);
+	    this[$googleplus] = new _servicesGoogleplusJs2['default'](serviceConfig);
 
 	    return this;
 	  }

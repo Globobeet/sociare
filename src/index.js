@@ -36,11 +36,13 @@ export default class Sociare {
     this[$container] = container;
     this[$config] = utils.extend({}, defaultConfig, window.SociareConfig, config);
 
-    this[$facebook]   = new Facebook(utils.extend({ url: this.url }, this.config));
-    this[$twitter]    = new Twitter(utils.extend({ url: this.url }, this.config));
-    this[$pinterest]  = new Pinterest(utils.extend({ url: this.url }, this.config));
-    this[$linkedin]   = new LinkedIn(utils.extend({ url: this.url }, this.config));
-    this[$googleplus] = new GooglePlus(utils.extend({ url: this.url }, this.config));
+    let serviceConfig = utils.extend({}, this.config, { url: this._url });
+
+    this[$facebook]   = new Facebook(serviceConfig);
+    this[$twitter]    = new Twitter(serviceConfig);
+    this[$pinterest]  = new Pinterest(serviceConfig);
+    this[$linkedin]   = new LinkedIn(serviceConfig);
+    this[$googleplus] = new GooglePlus(serviceConfig);
 
     return this;
   }
