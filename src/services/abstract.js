@@ -3,6 +3,7 @@
 import utils from '../utils.js';
 
 const $options = Symbol('options');
+const $count = Symbol('count');
 
 export default class AbstractService {
   get options() { return this[$options]; }
@@ -29,6 +30,22 @@ export default class AbstractService {
 
     // Store count
     this.count = 0;
+  }
+
+  get count() {
+    let count = this[$count];
+
+    if (count >= 1000000) {
+      return (count/1000000).toFixed(1).replace('.0', '') + 'M';
+    } else if (count >= 1000) {
+      return (count/1000).toFixed(1).replace('.0', '') + 'k';
+    } else {
+      return count;
+    }
+  }
+
+  set count(count) {
+    this[$count] = count;
   }
 
   get parsed_options() {

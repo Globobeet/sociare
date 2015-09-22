@@ -61,6 +61,42 @@ describe('Sociare', () => {
       });
     });
 
+    describe('count', () => {
+      let service = new TestService(utils.extend({}, defaultConfig, {
+        buttons: [{ type: 'test', tag: 'span', template: 'Testing!' }]
+      }));
+
+      it('should abbreviate counts over 1000', () => {
+        service.count = 1000;
+        expect(service.count).to.equal('1k');
+
+        service.count = 1240;
+        expect(service.count).to.equal('1.2k');
+
+        service.count = 1250;
+        expect(service.count).to.equal('1.3k');
+      });
+
+      it('should abbreviate counts over 1000000', () => {
+        service.count = 1000000;
+        expect(service.count).to.equal('1M');
+
+        service.count = 1240000;
+        expect(service.count).to.equal('1.2M');
+
+        service.count = 1250000;
+        expect(service.count).to.equal('1.3M');
+      });
+
+      it('should return the count unmodified when under 1000', () => {
+        service.count = 999;
+        expect(service.count).to.equal(999);
+
+        service.count = 0;
+        expect(service.count).to.equal(0);
+      });
+    });
+
     describe('parsed_options', () => {
       let service;
 
