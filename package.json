@@ -1,6 +1,6 @@
 {
   "name": "sociare",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Super simple customizable share buttons with counts.",
   "homepage": "https://github.com/Globobeet/sociare",
   "main": "lib/index.js",

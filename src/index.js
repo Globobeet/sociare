@@ -89,9 +89,9 @@ export default class Sociare {
       });
   }
 
-  _renderButtons(counts) {
+  _renderButtons() {
     this._networks.forEach((network) => {
-      this.container.appendChild(this[network].generateButton(counts[network]));
+      this.container.appendChild(this[network].generateButton());
     });
   }
 

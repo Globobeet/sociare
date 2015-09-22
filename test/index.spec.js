@@ -214,6 +214,7 @@ describe('Sociare', () => {
         expect(render).to.have.been.calledOnce;
         expect(counts).to.have.been.calledOnce;
         expect(render).to.have.been.calledBefore(counts);
+        expect(render).to.have.been.calledWithExactly();
         expect(sociare.facebook.count).to.equal(2);
         expect(sociare.twitter.count).to.equal(5);
       });

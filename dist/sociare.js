@@ -149,11 +149,11 @@
 	    }
 	  }, {
 	    key: '_renderButtons',
-	    value: function _renderButtons(counts) {
+	    value: function _renderButtons() {
 	      var _this = this;
 
 	      this._networks.forEach(function (network) {
-	        _this.container.appendChild(_this[network].generateButton(counts[network]));
+	        _this.container.appendChild(_this[network].generateButton());
 	      });
 	    }
 	  }, {
