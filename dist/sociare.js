@@ -139,7 +139,7 @@
 
 	      // Indicate if the query string should be included
 	      if (this.config.noQueryCount) {
-	        url += '&stripQuery=true';
+	        url += '&omitQuery=true';
 	      }
 
 	      return _utilsJs2['default'].request(url)['catch'](function (err) {
@@ -374,6 +374,7 @@
 	var _utilsJs2 = _interopRequireDefault(_utilsJs);
 
 	var $options = Symbol('options');
+	var $count = Symbol('count');
 
 	var AbstractService = (function () {
 	  _createClass(AbstractService, [{
@@ -469,6 +470,22 @@
 	      };
 
 	      return elem;
+	    }
+	  }, {
+	    key: 'count',
+	    get: function get() {
+	      var count = this[$count];
+
+	      if (count >= 1000000) {
+	        return (count / 1000000).toFixed(1).replace('.0', '') + 'M';
+	      } else if (count >= 1000) {
+	        return (count / 1000).toFixed(1).replace('.0', '') + 'k';
+	      } else {
+	        return count;
+	      }
+	    },
+	    set: function set(count) {
+	      this[$count] = count;
 	    }
 	  }, {
 	    key: 'parsed_options',
