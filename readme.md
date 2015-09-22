@@ -20,7 +20,7 @@ or you can [download it directly.](https://raw.githubusercontent.com/Globobeet/s
 
 
 ## Prerequisites
-Sociare has 0 package dependencies, but comes bundled with the Babel polyfill. Once browser support reaches a point where this polyfill is no longer needed, it will be removed from the package.
+Sociare comes bundled with only 1 dependency, Babel runtime, which enables key ES6 features that Sociare uses. Once browser support reaches a point where this runtime is no longer needed, it will be removed from the package.
 
 
 ### Browser support
