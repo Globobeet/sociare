@@ -159,7 +159,15 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      return this._getCounts().then(this._renderButtons.bind(this))['catch'](function (err) {
+	      var _this2 = this;
+
+	      this._renderButtons();
+
+	      return this._getCounts().then(function (counts) {
+	        Object.keys(counts).forEach(function (key) {
+	          return _this2[key].count = counts[key];
+	        });
+	      })['catch'](function (err) {
 	        console.error('[Sociare Error]', err);
 	      });
 	    }
@@ -375,6 +383,7 @@
 
 	var $options = Symbol('options');
 	var $count = Symbol('count');
+	var $rendered = Symbol('rendered');
 
 	var AbstractService = (function () {
 	  _createClass(AbstractService, [{
@@ -397,12 +406,15 @@
 	    get: function get() {
 	      return encodeURIComponent(this.options.url);
 	    }
+	  }, {
+	    key: 'rendered',
+	    get: function get() {
+	      return this[$rendered];
+	    }
 	  }]);
 
-	  function AbstractService() {
+	  function AbstractService(config) {
 	    var _this = this;
-
-	    var config = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
 	    _classCallCheck(this, AbstractService);
 
@@ -426,50 +438,56 @@
 
 	    // Store count
 	    this.count = 0;
+
+	    this[$rendered] = false;
 	  }
 
 	  _createClass(AbstractService, [{
 	    key: 'generateButton',
-	    value: function generateButton(count) {
+	    value: function generateButton() {
 	      var _this2 = this;
 
-	      // Store the new count
-	      this.count = count;
+	      var options = this.parsed_options;
 
-	      var options = this.parsed_options,
-	          elem = document.createElement(options.tag);
+	      this.elem = document.createElement(options.tag);
 
 	      // Apply id
-	      elem.id = options.id;
+	      this.elem.id = options.id;
 
 	      // Apply classes
-	      elem.className = options['class'];
+	      this.elem.className = options['class'];
 
 	      // Apply attributes
 	      Object.keys(options.attrs).forEach(function (key) {
-	        return elem.setAttribute(key, options.attrs[key]);
+	        return _this2.elem.setAttribute(key, options.attrs[key]);
 	      });
 
 	      // Apply template
-	      elem.innerHTML = options.template;
+	      this.elem.innerHTML = options.template;
 
 	      // Bind click event
-	      elem.onclick = function () {
+	      this.elem.onclick = function () {
 	        // Open the share popup
 	        var popup_options = 'status=no,resizable=yes,toolbar=no,menubar=no,scrollbars=no,location=no,directories=no,width=600,height=600';
 	        window.open(_this2.popupUrl, _this2.name, popup_options);
 
 	        // Add 1 to the count
-	        _this2.count++;
-
-	        // Re-render the inner template
-	        elem.innerHTML = _this2.parsed_options.template;
+	        _this2.count = _this2[$count] + 1;
 
 	        // Prevent bubbling
 	        return false;
 	      };
 
-	      return elem;
+	      // Mark it as rendered
+	      this[$rendered] = true;
+
+	      return this.elem;
+	    }
+	  }, {
+	    key: 'update',
+	    value: function update() {
+	      // Re-apply template
+	      this.elem.innerHTML = this.parsed_options.template;
 	    }
 	  }, {
 	    key: 'count',
@@ -486,6 +504,9 @@
 	    },
 	    set: function set(count) {
 	      this[$count] = count;
+	      if (this.rendered) {
+	        this.update();
+	      }
 	    }
 	  }, {
 	    key: 'parsed_options',
