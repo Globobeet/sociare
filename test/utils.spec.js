@@ -32,13 +32,9 @@ describe('Utils', () => {
 
     afterEach(() => { open.restore(); });
 
-    it('should return a promise', () => {
-      expect(utils.request(url)).to.be.an.instanceof(Promise);
-    });
-
     it('should send an XHR request for the given URL', () => {
       return utils.request(url)
-        .finally(() => {
+        .then(() => {
           expect(open).to.have.been.calledOnce;
           expect(open).to.have.been.calledWith('GET', url);
         });
@@ -50,7 +46,7 @@ describe('Utils', () => {
 
       return utils.request(url)
         .then(success, fail)
-        .finally(() => {
+        .then(() => {
           expect(success).to.have.been.calledOnce;
           expect(success).to.have.been.calledWithExactly({ test: 'data' });
         });
@@ -64,7 +60,7 @@ describe('Utils', () => {
 
       return utils.request(url)
         .then(success, fail)
-        .finally(() => {
+        .then(() => {
           expect(fail).to.have.been.calledOnce;
           expect(fail).to.have.been.calledWithExactly({ message: 'Test error.' });
         });
@@ -80,7 +76,7 @@ describe('Utils', () => {
 
       return utils.request(url)
         .then(success, fail)
-        .finally(() => {
+        .then(() => {
           expect(fail).to.have.been.calledOnce;
           expect(fail.args[0][0]).to.contain(`Unable to connect to ${url}`);
           expect(fail.args[0][0]).to.contain('Other error.');

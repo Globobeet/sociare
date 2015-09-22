@@ -20,7 +20,7 @@ or you can [download it directly.](https://raw.githubusercontent.com/Globobeet/s
 
 
 ## Prerequisites
-Sociare has 0 package dependencies, but does require that `Promise` be available globally. All modern browsers aside from IE have promise support, so for those, you can include a library like [Bluebird](https://github.com/petkaantonov/bluebird) or [RSVP](https://github.com/tildeio/rsvp.js/) and expose the Promise constructor on the `window` object.
+Sociare has 0 package dependencies, but comes bundled with the Babel polyfill. Once browser support reaches a point where this polyfill is no longer needed, it will be removed from the package.
 
 
 ### Browser support

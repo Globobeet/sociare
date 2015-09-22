@@ -210,7 +210,7 @@ describe('Sociare', () => {
     });
 
     it('should render the buttons and then get the counts, applying them once they come in', () => {
-      return sociare.render().finally(function () {
+      return sociare.render().then(function () {
         expect(render).to.have.been.calledOnce;
         expect(counts).to.have.been.calledOnce;
         expect(render).to.have.been.calledBefore(counts);
@@ -223,7 +223,7 @@ describe('Sociare', () => {
     it('should log out errors', function () {
       counts.returns(Promise.reject({ message: 'test error' }));
 
-      return sociare.render().finally(() => {
+      return sociare.render().then(() => {
         expect(error).to.have.been.calledOnce;
         expect(error.args[0][0]).to.equal('[Sociare Error]');
         expect(error.args[0][1].message).to.equal('test error');

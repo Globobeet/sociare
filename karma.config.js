@@ -12,7 +12,7 @@ testConfig.module.preLoaders = [
       path.resolve('src/'),
       path.resolve('node_modules/')
     ],
-    loader: 'babel'
+    loader: 'babel?optional[]=runtime'
   },
 
   // Transpile and add coverage on source files using isparta

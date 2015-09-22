@@ -11,7 +11,7 @@ module.exports = {
     preLoaders: [{
       test: /\.js?$/,
       exclude: /(node_modules|bower_components)/,
-      loader: 'babel'
+      loader: 'babel?optional[]=runtime'
     }]
   }
 };
