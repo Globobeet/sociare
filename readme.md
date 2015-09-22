@@ -19,6 +19,19 @@ $ bower install -S sociare
 or you can [download it directly.](https://raw.githubusercontent.com/Globobeet/sociare/master/dist/sociare.min.js)
 
 
+## Prerequisites
+Sociare has 0 package dependencies, but does require that `Promise` be available globally. All modern browsers aside from IE have promise support, so for those, you can include a library like [Bluebird](https://github.com/petkaantonov/bluebird) or [RSVP](https://github.com/tildeio/rsvp.js/) and expose the Promise constructor on the `window` object.
+
+
+### Browser support
+
+* Google Chrome (at least latest 2)
+* Safari (at least latest 2)
+* Firefox (at least latest 2)
+* Edge 12+
+* Internet Explorer 9+
+
+
 ## Usage Example
 
 ```javascript
