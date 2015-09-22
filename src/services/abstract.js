@@ -4,14 +4,16 @@ import utils from '../utils.js';
 
 const $options = Symbol('options');
 const $count = Symbol('count');
+const $rendered = Symbol('rendered');
 
 export default class AbstractService {
   get options() { return this[$options]; }
   get name() { return ''; }
   get popupUrl() { return ''; }
   get encodedUrl() { return encodeURIComponent(this.options.url); }
+  get rendered() { return this[$rendered]; }
 
-  constructor(config={}) {
+  constructor(config) {
     let defaultConfig = {
       url: config.url || '',
       tag: config.buttonTag,
@@ -30,6 +32,8 @@ export default class AbstractService {
 
     // Store count
     this.count = 0;
+
+    this[$rendered] = false;
   }
 
   get count() {
@@ -46,6 +50,7 @@ export default class AbstractService {
 
   set count(count) {
     this[$count] = count;
+    if (this.rendered) { this.update(); }
   }
 
   get parsed_options() {
@@ -72,41 +77,44 @@ export default class AbstractService {
     return replace_all_tokens(utils.extend({}, this.options));
   }
 
-  generateButton(count) {
-    // Store the new count
-    this.count = count;
+  generateButton() {
+    let options = this.parsed_options;
 
-    let options = this.parsed_options,
-        elem = document.createElement(options.tag);
+    this.elem = document.createElement(options.tag)
 
     // Apply id
-    elem.id = options.id;
+    this.elem.id = options.id;
 
     // Apply classes
-    elem.className = options.class;
+    this.elem.className = options.class;
 
     // Apply attributes
-    Object.keys(options.attrs).forEach((key) => elem.setAttribute(key, options.attrs[key]));
+    Object.keys(options.attrs).forEach((key) => this.elem.setAttribute(key, options.attrs[key]));
 
     // Apply template
-    elem.innerHTML = options.template;
+    this.elem.innerHTML = options.template;
 
     // Bind click event
-    elem.onclick = () => {
+    this.elem.onclick = () => {
       // Open the share popup
       let popup_options = 'status=no,resizable=yes,toolbar=no,menubar=no,scrollbars=no,location=no,directories=no,width=600,height=600';
       window.open(this.popupUrl, this.name, popup_options);
 
       // Add 1 to the count
-      this.count++;
-
-      // Re-render the inner template
-      elem.innerHTML = this.parsed_options.template;
+      this.count = this[$count] + 1;
 
       // Prevent bubbling
       return false;
     };
 
-    return elem;
+    // Mark it as rendered
+    this[$rendered] = true;
+
+    return this.elem;
+  }
+
+  update() {
+    // Re-apply template
+    this.elem.innerHTML = this.parsed_options.template;
   }
 };

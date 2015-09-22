@@ -198,7 +198,8 @@ describe('Sociare', () => {
     beforeEach(() => {
       sociare = new Sociare(root);
       render = sinon.stub(Sociare.prototype, '_renderButtons');
-      counts = sinon.stub(Sociare.prototype, '_getCounts', () => Promise.resolve({ twitter: 5 }));
+      counts = sinon.stub(Sociare.prototype, '_getCounts');
+      counts.returns(Promise.resolve({ twitter: 5, facebook: 2 }));
       error = sinon.stub(console, 'error');
     });
 
@@ -208,17 +209,18 @@ describe('Sociare', () => {
       error.restore();
     });
 
-    it('should get the counts and render the buttons', () => {
+    it('should render the buttons and then get the counts, applying them once they come in', () => {
       return sociare.render().finally(function () {
-        expect(counts).to.have.been.calledOnce;
         expect(render).to.have.been.calledOnce;
-        expect(render).to.have.been.calledAfter(counts);
-        expect(render).to.have.been.calledWithExactly({ twitter: 5 });
+        expect(counts).to.have.been.calledOnce;
+        expect(render).to.have.been.calledBefore(counts);
+        expect(sociare.facebook.count).to.equal(2);
+        expect(sociare.twitter.count).to.equal(5);
       });
     });
 
     it('should log out errors', function () {
-      render.throws({ message: 'test error' });
+      counts.returns(Promise.reject({ message: 'test error' }));
 
       return sociare.render().finally(() => {
         expect(error).to.have.been.calledOnce;

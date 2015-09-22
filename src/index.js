@@ -96,9 +96,13 @@ export default class Sociare {
   }
 
   render() {
+    this._renderButtons();
+
     return this._getCounts()
-      .then(this._renderButtons.bind(this))
-      .catch((err) => {
+      .then(counts => {
+        Object.keys(counts).forEach(key => this[key].count = counts[key]);
+      })
+      .catch(err => {
         console.error('[Sociare Error]', err);
       });
   }

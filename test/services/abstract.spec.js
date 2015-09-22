@@ -66,34 +66,67 @@ describe('Sociare', () => {
         buttons: [{ type: 'test', tag: 'span', template: 'Testing!' }]
       }));
 
-      it('should abbreviate counts over 1000', () => {
-        service.count = 1000;
-        expect(service.count).to.equal('1k');
+      describe('get', () => {
+        it('should abbreviate counts over 1000', () => {
+          service.count = 1000;
+          expect(service.count).to.equal('1k');
 
-        service.count = 1240;
-        expect(service.count).to.equal('1.2k');
+          service.count = 1240;
+          expect(service.count).to.equal('1.2k');
 
-        service.count = 1250;
-        expect(service.count).to.equal('1.3k');
+          service.count = 1250;
+          expect(service.count).to.equal('1.3k');
+        });
+
+        it('should abbreviate counts over 1000000', () => {
+          service.count = 1000000;
+          expect(service.count).to.equal('1M');
+
+          service.count = 1249999;
+          expect(service.count).to.equal('1.2M');
+
+          service.count = 1250000;
+          expect(service.count).to.equal('1.3M');
+        });
+
+        it('should return the count unmodified when under 1000', () => {
+          service.count = 999;
+          expect(service.count).to.equal(999);
+
+          service.count = 0;
+          expect(service.count).to.equal(0);
+        });
       });
 
-      it('should abbreviate counts over 1000000', () => {
-        service.count = 1000000;
-        expect(service.count).to.equal('1M');
+      describe('set', () => {
+        let render;
+        beforeEach(() => { render = sinon.spy(service, 'update'); });
+        afterEach(() => { render.restore(); });
 
-        service.count = 1240000;
-        expect(service.count).to.equal('1.2M');
+        describe('before the button has been rendered', () => {
+          beforeEach(() => { service.count = 500; });
 
-        service.count = 1250000;
-        expect(service.count).to.equal('1.3M');
-      });
+          it('should update the count', () => {
+            expect(service.count).to.equal(500);
+          });
 
-      it('should return the count unmodified when under 1000', () => {
-        service.count = 999;
-        expect(service.count).to.equal(999);
+          it('should not re-render', () => {
+            expect(render).to.not.have.beenCalled;
+          });
+        });
 
-        service.count = 0;
-        expect(service.count).to.equal(0);
+        describe('after the button has been rendered', () => {
+          before(() => { service.generateButton(); });
+          beforeEach(() => { service.count = 550; });
+
+          it('should update the count', () => {
+            expect(service.count).to.equal(550);
+          });
+
+          it('should re-render', () => {
+            expect(render).to.have.been.calledOnce;
+          });
+        });
       });
     });
 
@@ -146,14 +179,9 @@ describe('Sociare', () => {
         }]
       });
 
-      it('should update the stored count', () => {
-        service.generateButton(15);
-        expect(service.count).to.equal(15);
-      });
-
       it('should return a DOM element', () => {
-        let elem = service.generateButton(15);
-        expect(elem.outerHTML).to.equal('<span id="btn-1" class="network-test count-15" data-network="test" data-count="15">Testing test - 15</span>');
+        let elem = service.generateButton();
+        expect(elem.outerHTML).to.equal('<span id="btn-1" class="network-test count-0" data-network="test" data-count="0">Testing test - 0</span>');
       });
     });
 
@@ -174,7 +202,8 @@ describe('Sociare', () => {
       elem, open;
 
       beforeEach(() => {
-        elem = service.generateButton(5);
+        service.count = 5;
+        elem = service.generateButton();
         open = sinon.stub(window, 'open');
         elem.onclick();
       });
