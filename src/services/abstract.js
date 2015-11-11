@@ -21,6 +21,8 @@ export default class AbstractService {
       class: config.buttonClass,
       attrs: config.buttonAttrs,
       template: config.buttonTemplate,
+      preHook: config.buttonPreHook,
+      postHook: config.buttonPostHook,
       extras: config[`${this.name}Extras`] || {}
     };
 
@@ -95,16 +97,25 @@ export default class AbstractService {
     this.elem.innerHTML = options.template;
 
     // Bind click event
-    this.elem.onclick = () => {
-      // Open the share popup
+    this.elem.onclick = (event) => {
       let popup_options = 'status=no,resizable=yes,toolbar=no,menubar=no,scrollbars=no,location=no,directories=no,width=600,height=600';
-      window.open(this.popupUrl, this.name, popup_options);
-
-      // Add 1 to the count
-      this.count = this[$count] + 1;
 
       // Prevent bubbling
-      return false;
+      event.stopPropagation();
+
+      return Promise.resolve()
+        .then(this.options.preHook)
+        .then(() => {
+          // Open the share popup
+          window.open(this.popupUrl, this.name, popup_options);
+
+          // Add 1 to the count
+          this.count = this[$count] + 1;
+        })
+        .then(this.options.postHook)
+        .catch(err => {
+          console.error('[Sociare Error]', err);
+        });
     };
 
     // Mark it as rendered

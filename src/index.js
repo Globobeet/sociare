@@ -25,6 +25,8 @@ let defaultConfig = {
   buttonClass: 'sociare sociare-{network}',
   buttonAttrs: {},
   buttonTemplate: 'Share on {network} - {count}',
+  buttonPreHook: undefined,
+  buttonPostHook: undefined,
   twitterExtras: {},
   pinterestExtras: {},
   linkedinExtras: {},
