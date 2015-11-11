@@ -3,6 +3,8 @@
 import AbstractService from '../../src/services/abstract.js';
 import utils from '../../src/utils.js';
 
+const simulant = require('simulant');
+
 describe('Sociare', () => {
   describe('AbstractService', () => {
     let defaultConfig = {
@@ -44,7 +46,9 @@ describe('Sociare', () => {
           attrs: {},
           template: 'Testing!',
           type: 'test',
-          extras: {}
+          extras: {},
+          preHook: undefined,
+          postHook: undefined
         });
       });
 
@@ -186,7 +190,7 @@ describe('Sociare', () => {
     });
 
     describe('onclick', () => {
-      let service = new TestService({
+      let config = {
         buttons: [{
           type: 'test',
           tag: 'span',
@@ -198,29 +202,81 @@ describe('Sociare', () => {
           },
           template: 'Testing {network} - {count}'
         }]
-      }),
-      elem, open;
+      }, service, elem, open, event;
 
       beforeEach(() => {
+        service = new TestService(config);
         service.count = 5;
         elem = service.generateButton();
+        event = simulant('click');
         open = sinon.stub(window, 'open');
-        elem.onclick();
       });
 
       afterEach(() => { open.restore(); });
 
       it('should open a popup', () => {
-        expect(open).to.have.been.calledOnce;
-        expect(open).to.have.been.calledWith('http://test.com', 'test');
+        return elem.onclick(event).then(() => {
+            expect(open).to.have.been.calledOnce;
+            expect(open).to.have.been.calledWith('http://test.com', 'test');
+        });
       });
 
       it('should increase the count by 1', () => {
-        expect(service.count).to.equal(6);
+        return elem.onclick(event).then(() => {
+            expect(service.count).to.equal(6);
+        });
       });
 
       it('should re-render the button', () => {
-        expect(elem.innerHTML).to.equal('Testing test - 6');
+        return elem.onclick(event).then(() => {
+          expect(elem.innerHTML).to.equal('Testing test - 6');
+        });
+      });
+
+      describe('with a pre-hook', () => {
+        let pre;
+        beforeEach(() => {
+          pre = sinon.stub().returns(Promise.resolve());
+          config.buttonPreHook = pre;
+          service = new TestService(config);
+          elem = service.generateButton();
+        });
+
+        it('should run the pre-hook first', () => {
+          return elem.onclick(event).then(() => {
+            expect(pre).to.have.been.calledOnce;
+            expect(pre).to.have.been.calledBefore(open);
+          });
+        });
+
+        it('should prevent the pop-up if it errors', () => {
+          pre.returns(Promise.reject('failure'));
+
+          return elem.onclick(event).then(() => {
+            expect(open).to.not.have.been.called;
+          });
+        });
+      });
+
+      describe('with a post-hook', () => {
+        let pre, post;
+        beforeEach(() => {
+          pre = sinon.stub().returns(Promise.resolve());
+          post = sinon.stub().returns(Promise.resolve());
+          config.buttonPreHook = pre;
+          config.buttonPostHook = post;
+          service = new TestService(config);
+          elem = service.generateButton();
+        });
+
+        it('should run the post-hook last', () => {
+          return elem.onclick(event).then(() => {
+            expect(pre).to.have.been.calledOnce;
+            expect(open).to.have.been.calledOnce;
+            expect(post).to.have.been.calledOnce;
+            expect(post).to.have.been.calledAfter(open);
+          });
+        });
       });
     });
   });

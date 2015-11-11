@@ -93,6 +93,8 @@ In any of the button configuration options (both default and button-specific), t
 | `buttonClass` | String | `"sociare sociare-{network}"` | Default button classes |
 | `buttonAttrs` | Object | `{}` | Additional attributes on button elements. Keys map to attribute names, values to attribute values |
 | `buttonTemplate` | String | `"Share on {network} - {count}"` | Default button template |
+| `buttonPreHook` | Function | `undefined` | Function to call immediately before opening popup. If is a rejecting promise, or throws an error, will prevent popup from opening. |
+| `buttonPostHook` | Function | `undefined` | Function to call immediately after opening popup. |
 | `buttons` | Array[String/Object] | `[]` | Buttons to be rendered. Can be a string of the network name to use default configuration, or a [button-specific configuration](#button-specific-configuration) object. Available networks are `"facebook"`, `"twitter"`, `"pinterest"`, `"linkedin"`, and `"googleplus"` |
 | `twitterExtras` | Object | `{}` | Default extra options for Twitter buttons. See [Twitter Extras](#twitter-extras) for full list of options.
 | `pinterestExtras` | Object | `{}` | Default extra options for Pinterest buttons. See [Pinterest Extras](#pinterest-extras) for full list of options.
@@ -111,6 +113,8 @@ Instead of just passing the network name as a string, you can fine-tune any butt
 | `class` | String | Button element classes |
 | `attrs` | Object | Additional attributes on button element. Keys map to attribute names, values to attribute values |
 | `template` | String | String template for innerHTML of button element |
+| `preHook` | Function |  Function to call immediately before opening popup. If is a rejecting promise, or throws an error, will prevent popup from opening. |
+| `postHook` | Function |  Function to call immediately after opening popup. | 
 | `extras` | Object | Additional network options (only available in twitter, pinterest, and linkedin types). See [Extras](#extras)
 
 
