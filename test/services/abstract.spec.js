@@ -202,7 +202,9 @@ describe('Sociare', () => {
           },
           template: 'Testing {network} - {count}'
         }]
-      }, service, elem, open, event;
+      },
+      t = 100,
+      service, elem, open, event;
 
       beforeEach(() => {
         service = new TestService(config);
@@ -214,46 +216,80 @@ describe('Sociare', () => {
 
       afterEach(() => { open.restore(); });
 
-      it('should open a popup', () => {
-        return elem.onclick(event).then(() => {
-            expect(open).to.have.been.calledOnce;
-            expect(open).to.have.been.calledWith('http://test.com', 'test');
-        });
+      it('should open a popup', done => {
+        elem.onclick(event);
+
+        setTimeout(() => {
+          expect(open).to.have.been.calledOnce;
+          expect(open).to.have.been.calledWith('http://test.com', 'test');
+          done();
+        }, t);
       });
 
-      it('should increase the count by 1', () => {
-        return elem.onclick(event).then(() => {
-            expect(service.count).to.equal(6);
-        });
+      it('should increase the count by 1', done => {
+        elem.onclick(event);
+
+        setTimeout(() => {
+          expect(service.count).to.equal(6);
+          done();
+        }, t);
       });
 
-      it('should re-render the button', () => {
-        return elem.onclick(event).then(() => {
+      it('should re-render the button', done => {
+        elem.onclick(event);
+
+        setTimeout(() => {
           expect(elem.innerHTML).to.equal('Testing test - 6');
-        });
+          done();
+        }, t);
       });
 
       describe('with a pre-hook', () => {
         let pre;
         beforeEach(() => {
-          pre = sinon.stub().returns(Promise.resolve());
+          pre = sinon.stub().callsArg(0);
           config.buttonPreHook = pre;
           service = new TestService(config);
           elem = service.generateButton();
         });
 
-        it('should run the pre-hook first', () => {
-          return elem.onclick(event).then(() => {
+        it('should run the pre-hook first', done => {
+          elem.onclick(event);
+
+          setTimeout(() => {
             expect(pre).to.have.been.calledOnce;
             expect(pre).to.have.been.calledBefore(open);
-          });
+            done();
+          }, t);
         });
 
-        it('should prevent the pop-up if it errors', () => {
-          pre.returns(Promise.reject('failure'));
+        describe('if it errors', () => {
+          let log;
 
-          return elem.onclick(event).then(() => {
-            expect(open).to.not.have.been.called;
+          beforeEach(() => {
+            pre.callsArgWith(0, 'failure');
+            log = sinon.stub(console, 'error');
+          });
+
+          afterEach(() => { log.restore(); });
+
+          it('should log the error', done => {
+            elem.onclick(event);
+
+            setTimeout(() => {
+              expect(log).to.have.been.calledOnce;
+              expect(log.args[0][1]).to.equal('failure');
+              done();
+            }, t);
+          });
+
+          it('should prevent the pop-up if it errors', done => {
+            elem.onclick(event);
+
+            setTimeout(() => {
+              expect(open).to.not.have.been.called;
+              done();
+            }, t);
           });
         });
       });
@@ -261,21 +297,24 @@ describe('Sociare', () => {
       describe('with a post-hook', () => {
         let pre, post;
         beforeEach(() => {
-          pre = sinon.stub().returns(Promise.resolve());
-          post = sinon.stub().returns(Promise.resolve());
+          pre = sinon.stub().callsArg(0);
+          post = sinon.stub();
           config.buttonPreHook = pre;
           config.buttonPostHook = post;
           service = new TestService(config);
           elem = service.generateButton();
         });
 
-        it('should run the post-hook last', () => {
-          return elem.onclick(event).then(() => {
+        it('should run the post-hook last', done => {
+          elem.onclick(event);
+
+          setTimeout(() => {
             expect(pre).to.have.been.calledOnce;
             expect(open).to.have.been.calledOnce;
             expect(post).to.have.been.calledOnce;
             expect(post).to.have.been.calledAfter(open);
-          });
+            done();
+          }, t);
         });
       });
     });
