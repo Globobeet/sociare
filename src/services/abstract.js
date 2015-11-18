@@ -98,24 +98,25 @@ export default class AbstractService {
 
     // Bind click event
     this.elem.onclick = (event) => {
-      let popup_options = 'status=no,resizable=yes,toolbar=no,menubar=no,scrollbars=no,location=no,directories=no,width=600,height=600';
+      let popup_options = 'status=no,resizable=yes,toolbar=no,menubar=no,scrollbars=no,location=no,directories=no,width=600,height=600',
+          noop = function (cb) { if (cb) { return cb(); } },
+          pre = this.options.preHook || noop,
+          post = this.options.postHook || noop;
 
       // Prevent bubbling
       event.stopPropagation();
 
-      return Promise.resolve()
-        .then(this.options.preHook)
-        .then(() => {
-          // Open the share popup
-          window.open(this.popupUrl, this.name, popup_options);
+      pre(function (err) {
+        if (err) { return console.error('[Sociare Error]', err); }
 
-          // Add 1 to the count
-          this.count = this[$count] + 1;
-        })
-        .then(this.options.postHook)
-        .catch(err => {
-          console.error('[Sociare Error]', err);
-        });
+        // Open the share popup
+        window.open(this.popupUrl, this.name, popup_options);
+
+        // Add 1 to the count
+        this.count = this[$count] + 1;
+
+        post();
+      }.bind(this));
     };
 
     // Mark it as rendered

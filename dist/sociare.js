@@ -2124,8 +2124,6 @@
 
 	var _Object$keys = __webpack_require__(65)['default'];
 
-	var _Promise = __webpack_require__(32)['default'];
-
 	var _interopRequireDefault = __webpack_require__(70)['default'];
 
 	Object.defineProperty(exports, '__esModule', {
@@ -2224,20 +2222,31 @@
 
 	      // Bind click event
 	      this.elem.onclick = function (event) {
-	        var popup_options = 'status=no,resizable=yes,toolbar=no,menubar=no,scrollbars=no,location=no,directories=no,width=600,height=600';
+	        var popup_options = 'status=no,resizable=yes,toolbar=no,menubar=no,scrollbars=no,location=no,directories=no,width=600,height=600',
+	            noop = function noop(cb) {
+	          if (cb) {
+	            return cb();
+	          }
+	        },
+	            pre = _this2.options.preHook || noop,
+	            post = _this2.options.postHook || noop;
 
 	        // Prevent bubbling
 	        event.stopPropagation();
 
-	        return _Promise.resolve().then(_this2.options.preHook).then(function () {
+	        pre((function (err) {
+	          if (err) {
+	            return console.error('[Sociare Error]', err);
+	          }
+
 	          // Open the share popup
-	          window.open(_this2.popupUrl, _this2.name, popup_options);
+	          window.open(this.popupUrl, this.name, popup_options);
 
 	          // Add 1 to the count
-	          _this2.count = _this2[$count] + 1;
-	        }).then(_this2.options.postHook)['catch'](function (err) {
-	          console.error('[Sociare Error]', err);
-	        });
+	          this.count = this[$count] + 1;
+
+	          post();
+	        }).bind(_this2));
 	      };
 
 	      // Mark it as rendered
