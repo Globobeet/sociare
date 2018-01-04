@@ -93,8 +93,8 @@ In any of the button configuration options (both default and button-specific), t
 | `buttonClass` | String | `"sociare sociare-{network}"` | Default button classes |
 | `buttonAttrs` | Object | `{}` | Additional attributes on button elements. Keys map to attribute names, values to attribute values |
 | `buttonTemplate` | String | `"Share on {network} - {count}"` | Default button template |
-| `buttonPreHook` | Function | `undefined` | Function to call immediately before opening popup. Is passed a callback, which will prevent popup from opening if called with an error. Async functions run the risk of resulting in a blocked popup.  |
-| `buttonPostHook` | Function | `undefined` | Function to call immediately after opening popup. |
+| `buttonPreHook` | Function | `undefined` | Function to call immediately before opening popup. Is passed a callback, which will prevent popup from opening if called with an error, and the name of the network selected. Async functions run the risk of resulting in a blocked popup.  |
+| `buttonPostHook` | Function | `undefined` | Function to call immediately after opening popup. Is passed the name of the network selected. |
 | `buttons` | Array[String/Object] | `[]` | Buttons to be rendered. Can be a string of the network name to use default configuration, or a [button-specific configuration](#button-specific-configuration) object. Available networks are `"facebook"`, `"twitter"`, `"pinterest"`, `"linkedin"`, and `"googleplus"` |
 | `twitterExtras` | Object | `{}` | Default extra options for Twitter buttons. See [Twitter Extras](#twitter-extras) for full list of options.
 | `pinterestExtras` | Object | `{}` | Default extra options for Pinterest buttons. See [Pinterest Extras](#pinterest-extras) for full list of options.

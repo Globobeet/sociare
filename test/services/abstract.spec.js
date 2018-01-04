@@ -259,6 +259,7 @@ describe('Sociare', () => {
           setTimeout(() => {
             expect(pre).to.have.been.calledOnce;
             expect(pre).to.have.been.calledBefore(open);
+            expect(pre.args[0][1]).to.equal('test');
             done();
           }, t);
         });
@@ -313,6 +314,7 @@ describe('Sociare', () => {
             expect(open).to.have.been.calledOnce;
             expect(post).to.have.been.calledOnce;
             expect(post).to.have.been.calledAfter(open);
+            expect(post).have.been.calledWithExactly('test');
             done();
           }, t);
         });

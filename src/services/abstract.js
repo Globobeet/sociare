@@ -115,8 +115,8 @@ export default class AbstractService {
         // Add 1 to the count
         this.count = this[$count] + 1;
 
-        post();
-      }.bind(this));
+        post(this.name);
+      }.bind(this), this.name);
     };
 
     // Mark it as rendered
