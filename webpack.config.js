@@ -8,10 +8,10 @@ module.exports = {
     filename: "sociare.js"
   },
   module: {
-    preLoaders: [{
+    rules: [{
       test: /\.js?$/,
-      exclude: /(node_modules|bower_components)/,
-      loader: 'babel?optional[]=runtime'
+      exclude: /(node_modules)/,
+      use: 'babel-loader'
     }]
   }
 };

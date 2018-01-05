@@ -69,7 +69,7 @@ describe('Utils', () => {
     it('should reject if an error happens', () => {
       let success = sinon.spy(),
           fail = sinon.spy(),
-          send = sinon.stub(XMLHttpRequest.prototype, 'send', function () {
+          send = sinon.stub(XMLHttpRequest.prototype, 'send').callsFake(function () {
             this.responseText = 'Other error.'
             return this.onerror();
           });

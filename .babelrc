@@ -1,0 +1,19 @@
+{
+  "presets": [
+    ["env", { "modules": false }],
+    "stage-2",
+  ],
+  "plugins": [
+    ["istanbul", { "exclude": ["test/**/*"] }],
+    "transform-es2015-modules-commonjs",
+    "transform-runtime",
+  ],
+  "env": {
+    "production": {
+      "plugins": [
+        "transform-es2015-modules-commonjs",
+        "transform-runtime",
+      ]
+    }
+  }
+}

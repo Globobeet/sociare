@@ -175,8 +175,8 @@ describe('Sociare', () => {
 
     beforeEach(() => {
       sociare = new Sociare(root);
-      twitter = sinon.stub(sociare.twitter, 'generateButton', () => _generateButton('twitter'));
-      facebook = sinon.stub(sociare.facebook, 'generateButton', () => _generateButton('facebook'));
+      twitter = sinon.stub(sociare.twitter, 'generateButton').callsFake(() => _generateButton('twitter'));
+      facebook = sinon.stub(sociare.facebook, 'generateButton').callsFake(() => _generateButton('facebook'));
     });
 
     afterEach(() => {

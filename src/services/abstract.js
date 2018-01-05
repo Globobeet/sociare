@@ -81,6 +81,8 @@ export default class AbstractService {
 
   generateButton() {
     let options = this.parsed_options;
+    let defaultPreHook = cb => (cb && cb());
+    let defaultPostHook = () => {};
 
     this.elem = document.createElement(options.tag)
 
@@ -98,15 +100,14 @@ export default class AbstractService {
 
     // Bind click event
     this.elem.onclick = (event) => {
-      let popup_options = 'status=no,resizable=yes,toolbar=no,menubar=no,scrollbars=no,location=no,directories=no,width=600,height=600',
-          noop = function (cb) { if (cb) { return cb(); } },
-          pre = this.options.preHook || noop,
-          post = this.options.postHook || noop;
+      let popup_options = 'status=no,resizable=yes,toolbar=no,menubar=no,scrollbars=no,location=no,directories=no,width=600,height=600';
+      let pre = this.options.preHook || defaultPreHook;
+      let post = this.options.postHook || defaultPostHook;
 
       // Prevent bubbling
       event.stopPropagation();
 
-      pre(function (err) {
+      pre((err) => {
         if (err) { return console.error('[Sociare Error]', err); }
 
         // Open the share popup
@@ -116,7 +117,7 @@ export default class AbstractService {
         this.count = this[$count] + 1;
 
         post(this.name);
-      }.bind(this), this.name);
+      }, this.name);
     };
 
     // Mark it as rendered

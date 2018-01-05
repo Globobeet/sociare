@@ -1,27 +1,6 @@
-var _ = require('lodash'),
-    path = require('path'),
-    webpackConfig = require('./webpack.config'),
-    testConfig = _.omit(webpackConfig, 'entry', 'output');
-
-// Set up coverage loader
-testConfig.module.preLoaders = [
-  // Run normal babel loader on everything except source files
-  {
-    test: /\.js$/,
-    exclude: [
-      path.resolve('src/'),
-      path.resolve('node_modules/')
-    ],
-    loader: 'babel?optional[]=runtime'
-  },
-
-  // Transpile and add coverage on source files using isparta
-  {
-    test: /\.js$/,
-    include: path.resolve('src/'),
-    loader: 'isparta'
-  }
-];
+const _ = require('lodash');
+const path = require('path');
+const webpackConfig = require('./webpack.config');
 
 module.exports = function(config) {
   config.set({
@@ -34,10 +13,7 @@ module.exports = function(config) {
     browserNoActivityTimeout: 120000,
     singleRun: true,
 
-    files: [
-      'node_modules/babel-core/browser-polyfill.js',
-      'test/_setup.js'
-    ],
+    files: ['test/_setup.js'],
 
     preprocessors: {
       'test/_setup.js': ['webpack']
@@ -56,7 +32,7 @@ module.exports = function(config) {
       'karma-webpack'
     ],
 
-    webpack: testConfig,
+    webpack: _.omit(webpackConfig, 'entry', 'output'),
 
     webpackMiddleware: {
       noInfo: true,
